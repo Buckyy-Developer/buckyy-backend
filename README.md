@@ -1,3 +1,2 @@
-docker-compose -p "life-core" up --detach
+docker-compose -p "buckyy-backend" up --detach
 
-docker login registrygitlab.keysource.be -u <username> -p <token>
