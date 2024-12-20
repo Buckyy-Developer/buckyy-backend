@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lifestory : Reset password</title>
+    <style type="text/css">
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .login_card {
+        display: flex;
+        flex-direction: column;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      img {
+        margin-bottom: 15px;
+        max-width: 200px;
+        align-self: center;
+      }
+      .login_card input {
+        padding: 10px;
+        outline: 0;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+        border: 1px solid #aaa;
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 15px;
+        background: #fff;
+      }
+      button {
+        cursor: pointer;
+        background-color: #00ff72;
+        text-align: center;
+        border-radius: 20px;
+        border-color: #b5ffd6;
+        border-width: 1px;
+        border-style: solid;
+        height: 40px;
+        color: #ffffff;
+        line-height: 1em;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      #error {
+        color: red;
+        margin: 0 0 5px 0;
+      }
+    </style>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body onload="initForm();">
+    <div id="form" class="login_card">
+      <form action="">
+        <img
+          alt="Lifestory"
+          src="../logo-lifestory@2x.png"
+          id="logoAuth"
+          data-v-84a6bb7e=""
+        />
+        <input
+          type="password"
+          id="password"
+          placeholder="New password"
+          name="password"
+          class="form-control input-pass"
+          required=""
+        />
+        <input
+          type="password"
+          id="passwordverif"
+          placeholder="Confirm the new password"
+          name="passwordverif"
+          class="form-control input-pass"
+          required=""
+        />
+        <p id="error"></p>
+        <button id="submit" type="submit" class="btn-auth w-100">Reset password</button>
+      </form>
+    </div>
+    <div id="success" style="display: none;">
+        Your password is correctly modified.
+    </div>
+
+    <script>
+      function initForm() {
+        document.getElementById("submit").onclick = submitForm;
+      }
+      function submitForm(e) {
+        e.preventDefault();
+        document.getElementById("error").innerHTML = "";
+
+        let password = document.getElementById("password").value;
+        let passwordverif = document.getElementById("passwordverif").value;
+        if (password != passwordverif){
+            document.getElementById("error").innerHTML = "New password and confirm password is not the same";
+            return;
+        }
+
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const params = Object.fromEntries(urlSearchParams.entries());
+
+        axios.post('/reset-password/', {new_password : password}, {headers: {'Authorization': 'Bearer '+params['t']  }})
+        .then(response => {
+            document.getElementById("form").style.display = "none";
+            document.getElementById("success").style.display = "block";
+
+        })
+        .catch(error => {
+            console.log(error.response);
+            if (error.response.status == 401) {
+                document.getElementById("error").innerHTML = `Error: ${error.response}`;
+                return;
+            }
+            else if (error.response.data.detail) {
+                document.getElementById("error").innerHTML = `Error: ${error.response.data.detail}`;
+            } else {
+                document.getElementById("error").innerHTML = `Error: ${error.response.statusText}`;
+            }
+        });
+
+      }
+       
+    </script>
+  </body>
+</html>

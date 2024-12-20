@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+psycopg2-binary
+sqlalchemy
+pydantic_settings
+motor
+email-validator
+bcrypt
+passlib
+python-jose
+python-multipart
+requests
+emails

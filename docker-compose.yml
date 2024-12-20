@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:12
+    container_name: buckyy-db
+    restart: always
+    volumes:
+      - buckyy-db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    networks:
+      buckyy-net:
+        ipv4_address: 10.7.0.5
+
+  api:
+    build:
+      context: .
+    container_name: buckyy-api
+    restart: always
+    volumes:
+      - buckyy-upload-files:/app/${UPLOAD_LOCATION}
+    ports:
+      - "8000:80"
+    env_file:
+      - .env
+    networks:
+      buckyy-net:
+        ipv4_address: 10.7.0.2
+
+volumes:
+  buckyy-db-data:
+  buckyy-upload-files:
+
+networks:
+  buckyy-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.7.0.0/16
+          gateway: 10.7.0.1
